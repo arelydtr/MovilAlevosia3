@@ -1,0 +1,32 @@
+name: Run React Native Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Configuración del entorno y chequeo del repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Configuración de Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      # Instalación de dependencias
+      - name: Install dependencies
+        run: npm install
+
+      # Ejecución de las pruebas
+      - name: Run Jest tests
+        run: npm test -- --watchAll=false
