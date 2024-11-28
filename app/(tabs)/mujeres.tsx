@@ -1,23 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  ScrollView, 
-  Image, 
-  StyleSheet, 
-  ActivityIndicator, 
-  TouchableOpacity, 
-  RefreshControl 
-} from 'react-native';
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, Image, Text, ScrollView, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
 
-const logo = require('../../assets/images/logo.png'); // Cambia la ruta si es necesario
-
-const images = [
-  require('../../assets/images/main4.jpg'),
-  require('../../assets/images/main2.jpg'),
-  require('../../assets/images/main3.jpg'),
-  require('../../assets/images/main5.jpg'),
-];
+const logo = require('../../assets/images/logo.png'); 
 
 type Product = {
   ID_Prenda: string;
@@ -35,40 +19,32 @@ type Product = {
   Imagen: string;
 };
 
-export default function Index() {
+export default function Mujeres() {
   const [productos, setProductos] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false); // Estado para el control de actualización
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [refreshing, setRefreshing] = useState(false); // Estado para controlar la recarga
 
   useEffect(() => {
     obtenerProductos();
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 4000); // Cambia la imagen cada 4 segundos
-
-    return () => clearInterval(interval); // Limpia el intervalo al desmontar el componente
-  }, []);
-
   const obtenerProductos = async () => {
     try {
-      const response = await fetch("https://alev-backend-vercel.vercel.app/productosGeneral");
+      setLoading(true); // Muestra el indicador de carga
+      const response = await fetch("https://alev-backend-vercel.vercel.app/mujeres");
       const data = await response.json();
       setProductos(data);
     } catch (error) {
       console.error("Error al obtener los productos:", error);
     } finally {
-      setLoading(false);
+      setLoading(false); // Oculta el indicador de carga
     }
   };
 
   const onRefresh = async () => {
-    setRefreshing(true); // Activa el indicador de actualización
-    await obtenerProductos();
-    setRefreshing(false); // Desactiva el indicador de actualización
+    setRefreshing(true); // Activa el indicador de recarga
+    await obtenerProductos(); // Llama a la función para obtener los productos
+    setRefreshing(false); // Desactiva el indicador de recarga
   };
 
   return (
@@ -78,21 +54,15 @@ export default function Index() {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      {/* Logo */}
       <Image source={logo} style={styles.logo} />
 
-      {/* Imagen cambiante */}
-      <Image source={images[currentImageIndex]} style={styles.image} />
+      <Text style={styles.description}>MUJERES</Text>
 
-      {/* Título */}
-      <Text style={styles.description}>Nuestros Productos</Text>
-
-      {/* Lista de productos */}
       {loading ? (
         <ActivityIndicator size="large" color="#007bff" />
       ) : (
         <View style={styles.cardsContainer}>
-          {productos.map((product) => (
+          {productos.map(product => (
             <View key={product.ID_Prenda} style={styles.card}>
               <Image
                 source={{ uri: `https://alevosia.host8b.me/image/${product.Imagen}` }}
@@ -124,17 +94,11 @@ const styles = StyleSheet.create({
     width: 380,
     height: 100,
   },
-  image: {
-    position: 'absolute',
-    top: 150,
-    width: 380,
-    height: 200,
-  },
   description: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: 'bold',
     color: '#333',
-    marginTop: 385,
+    marginTop: 150,
     textAlign: 'center',
   },
   cardsContainer: {
@@ -179,7 +143,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   loginButton: {
-    backgroundColor: '#888',
+    backgroundColor: 'blue',
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
@@ -187,6 +151,7 @@ const styles = StyleSheet.create({
   loginButtonText: {
     color: '#fff',
     textAlign: 'center',
-    fontSize: 10,
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });
