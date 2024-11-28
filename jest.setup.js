@@ -7,3 +7,14 @@ import 'formdata-polyfill'; // Asegura que FormData esté definido
 jest.mock('react-native/Libraries/Alert/Alert', () => ({
   alert: jest.fn(),
 }));
+
+// Mock para FormData
+global.FormData = jest.fn(() => ({
+    append: jest.fn(),
+    delete: jest.fn(),
+    get: jest.fn(),
+    getAll: jest.fn(),
+    has: jest.fn(),
+    set: jest.fn(),
+  }));
+  
