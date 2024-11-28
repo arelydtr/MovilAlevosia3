@@ -1,14 +1,9 @@
-import 'formdata-polyfill';
-// Mock de FormData
-global.FormData = class FormData {
-    append() {}
-  };
-  
-  // Si estás usando Expo, mockea animaciones nativas
-  jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
-  
-  // (Opcional) Mock de Alert para pruebas de React Native
-  jest.mock('react-native/Libraries/Alert/Alert', () => ({
-    alert: jest.fn(),
-  }));
-  
+import 'formdata-polyfill'; // Asegura que FormData esté definido
+
+// Mock para animaciones nativas (si estás usando Expo)
+jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
+
+// Mock de Alert para evitar problemas en las pruebas
+jest.mock('react-native/Libraries/Alert/Alert', () => ({
+  alert: jest.fn(),
+}));
