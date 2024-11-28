@@ -45,6 +45,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="carrito"
+        options={{
+          title: 'Carrito',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'cart' : 'cart-outline'} color={color} />
+          ),
+        }}
+      />
       {/* Pantalla de Quiénes Somos */}
       <Tabs.Screen
         name="quienesSomos"

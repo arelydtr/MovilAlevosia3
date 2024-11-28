@@ -4,17 +4,17 @@ import * as SecureStore from "expo-secure-store";
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  user: any; 
-  login: (userData: any) => void; 
-  logout: () => void; 
+  user: any;
+  login: (userData: any) => void;
+  logout: () => void;
 }
 
 // Valores predeterminados del contexto
 const AuthContextDefaultValues: AuthContextType = {
   isAuthenticated: false,
   user: null,
-  login: () => {},
-  logout: () => {},
+  login: () => { },
+  logout: () => { },
 };
 
 export const AuthContext = createContext<AuthContextType>(AuthContextDefaultValues);
@@ -24,21 +24,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<any>(null);
 
 
-  const login = (userData: any) => {
-    setIsAuthenticated(true);
-    console.log("aaaa " + userData)
-    setUser({
-      IdUser: userData.IdUser,
-      Nombre: userData.Nombre,
-      Correo: userData.Correo,
-      Telefono: userData.Telefono,
-      ImagenUrl: userData.ImagenUrl,
-    });
+  const login = async (userData: any) => {
+    try {
+      console.log("Datos del usuario para guardar:", userData);
+      console.log("Datos", userData.nombre);
+      const token = userData.token; // Obtén el token
+      const user = {
+        id: userData.id_usuario,
+        nombre: userData.nombre,
+        email: userData.email,
+        telefono: userData.telefono,
+        puesto: userData.Puesto,
+      };
+      console.log(user);
+      // Guarda el token y la información del usuario en SecureStore
+      await SecureStore.setItemAsync("userToken", token);
+      await SecureStore.setItemAsync("userInfo", JSON.stringify(user));
 
-    if (userData.Token) {
-      SecureStore.setItemAsync("userToken", JSON.stringify(userData.Token)); // Guardar el token
+      console.log("Usuario y token guardados correctamente.");
+    } catch (error) {
+      console.error("Error al guardar datos:", error);
     }
   };
+
 
   const logout = () => {
     SecureStore.deleteItemAsync("userToken");

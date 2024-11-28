@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Alevosia_Movil3",
-    "slug": "Alevosia_Movil3",
+    "slug": "alevosia",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.arely07.alevosia"
     },
     "web": {
       "bundler": "metro",
@@ -36,6 +37,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "95f16a58-4868-4e2f-95d5-81ba141e25e9"
+      }
+    },
+    "owner": "arely07"
   }
 }

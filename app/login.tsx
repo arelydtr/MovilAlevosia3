@@ -36,8 +36,6 @@ const LoginForm = () => {
       Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres.');
       return;
     }
-    console.log(email);
-    console.log(password);
     try {
       const response = await fetch('https://alev-backend-vercel.vercel.app/login', {
         method: 'POST',
@@ -51,12 +49,18 @@ const LoginForm = () => {
       });
   
       const data = await response.json();
-      console.log(data);
+      console.log("Datos completos:", data);
       if (data.message) {
         Alert.alert('Error', data.message || 'Credenciales inválidas.');
       } else {
         Alert.alert('Éxito', 'Inicio de sesión exitoso.');
-        login(data);
+        const userData = data.data;
+        console.log("Correo del usuario:", userData.email);
+        console.log("Nombre del usuario:", userData.nombre);
+        login({ 
+          ...userData, // Incluye la información del usuario
+          token: data.token // Incluye el token
+        });
         router.replace('/(tabs)'); // Redirigir al área autenticada
       }
     } catch (error) {

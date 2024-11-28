@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Image, Text, ScrollView, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
-
+import { View, StyleSheet, Image, Text, ScrollView, ActivityIndicator, TouchableOpacity, RefreshControl,Alert } from 'react-native';
+import useAuth from '../../src/context/UseAuth';
 // Importa el logo
-const logo = require('../../assets/images/logo.png'); 
+const logo = require('../../assets/images/logo.png');
 
 type Product = {
     ID_Prenda: string;
@@ -25,6 +25,7 @@ export default function Hombres() {
     const [productos, setProductos] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false); // Estado para controlar la recarga
+    const { user } = useAuth();
 
     useEffect(() => {
         obtenerProductos();
@@ -48,7 +49,37 @@ export default function Hombres() {
         await obtenerProductos(); // Recarga los datos
         setRefreshing(false); // Desactiva el indicador de recarga
     };
+    // Función para insertar el producto en el carrito
+    const InsertarCarrito = async (prodicto: { usuario: number; producto: string }) => {
+        try {
+            const response = await fetch("https://alev-backend-vercel.vercel.app/InsertarCarro", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(prodicto),
+            });
+            return await response.json();
+        } catch (error) {
+            console.error("Error al insertar en el carrito:", error);
+            throw error;
+        }
+    };
 
+    // Función para manejar la compra
+    const comprar = async (id: string) => {
+        try {
+            const prodicto = {
+                usuario: 26,
+                producto: id,
+            };
+            const response = await InsertarCarrito(prodicto);
+            Alert.alert("Éxito", "Producto agregado al carrito.");
+            console.log("Respuesta del servidor:", response);
+        } catch (error) {
+            Alert.alert("Error", "No se pudo agregar el producto al carrito.");
+        }
+    };
     return (
         <ScrollView
             style={styles.container}
@@ -77,7 +108,7 @@ export default function Hombres() {
                             <Text style={styles.cardTitle}>{product.Nombre}</Text>
                             <Text style={styles.cardDescription}>{product.Descripcion}</Text>
                             <Text style={styles.cardPrice}>${product.Precio}</Text>
-                            <TouchableOpacity style={styles.loginButton}>
+                            <TouchableOpacity style={styles.loginButton} onPress={() => comprar(product.ID_Prenda)}>
                                 <Text style={styles.loginButtonText}>Comprar</Text>
                             </TouchableOpacity>
                         </View>
@@ -107,11 +138,11 @@ const styles = StyleSheet.create({
         textAlign: 'center',  // Centra el texto
     },
     cardsContainer: {
-        flexDirection: 'row',       
-        flexWrap: 'wrap',          
+        flexDirection: 'row',
+        flexWrap: 'wrap',
         justifyContent: 'space-around', // Espacia las tarjetas de manera más equilibrada
-        marginTop: 20,             
-        paddingHorizontal: 5,     
+        marginTop: 20,
+        paddingHorizontal: 5,
     },
     card: {
         width: '48%',          // Ajusta el ancho de cada tarjeta (48% para que quepan dos con margen)
