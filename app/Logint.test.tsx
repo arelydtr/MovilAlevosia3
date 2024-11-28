@@ -6,6 +6,7 @@ jest.mock('react-native/Libraries/Alert/Alert', () => ({
   alert: jest.fn(),
 }));
 
+
 describe('Login Component', () => {
   it('renders correctly', () => {
     const { getByTestId } = render(<Logint onLogin={jest.fn()} />);

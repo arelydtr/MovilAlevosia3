@@ -13,7 +13,7 @@ const Logint: React.FC<LoginProps> = ({ onLogin }) => {
     if (email === 'test@example.com' && password === 'password123') {
       onLogin();
     } else {
-      Alert.alert('Error', 'Invalid credentials');
+      Alert.alert('Error', 'Invalid credentials :(');
     }
   };
 
