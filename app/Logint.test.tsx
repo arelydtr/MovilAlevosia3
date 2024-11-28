@@ -1,6 +1,7 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
 import Logint from './Logint';
+
 
 jest.mock('react-native/Libraries/Alert/Alert', () => ({
   alert: jest.fn(),
