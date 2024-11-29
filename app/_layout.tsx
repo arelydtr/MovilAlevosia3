@@ -8,6 +8,7 @@ import { AuthContext, AuthProvider } from '../src/context/AuthContext';
 import { Slot, useRouter } from 'expo-router'; // Asegúrate de importar Slot
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { StripeProvider } from '@stripe/stripe-react-native'; //Componente de Stripe
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -37,12 +38,14 @@ export default function RootLayout() {
   }
 
   return (
-    <AuthProvider>
+    <StripeProvider publishableKey="pk_live_51QK3p3KiNmXtnueI3z94e8nX8S4ttxOP0sfHk02U1CLbrlTP0qijyQOvHWFBF9LMCzGj3qQPm8jKwiHMNpsG8VgJ00uIf2Umb7">
+      <AuthProvider>
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
           {/* El Slot aquí permite que se rendericen las rutas dentro del stack */}
           <Slot />
         </ThemeProvider>
       </AuthProvider>
+    </StripeProvider>
   );
 }
 

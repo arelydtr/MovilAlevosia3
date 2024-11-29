@@ -9,6 +9,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
+import { useStripe } from "@stripe/stripe-react-native";
 
 type CartItem = {
   id_carrito: number;
@@ -25,7 +26,9 @@ const ShoppingCart = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
+  const [isPaymentLoading, setIsPaymentLoading] = useState(false); // Estado para la carga de pago
   const userId = 26; // Reemplaza esto con el ID del usuario desde tu contexto o autenticación
+  const { initPaymentSheet, presentPaymentSheet } = useStripe(); // Stripe hooks
 
   useEffect(() => {
     fetchCart();
@@ -110,26 +113,60 @@ const ShoppingCart = () => {
     }
   };
 
-  const handlePurchase = async () => {
+  const initializePaymentSheet = async () => {
     try {
+      setIsPaymentLoading(true);
       const response = await fetch(
-        'https://alev-backend-vercel.vercel.app/compra',
+        'https://rest-api2-three.vercel.app/api/create-payment-alevosia',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id_usuario: userId, total }),
+          body: JSON.stringify({ amount: 1000, User: userId }),
         }
       );
-      const data = await response.json();
-      if (data.success) {
-        Alert.alert('Éxito', 'Compra realizada con éxito.');
-        fetchCart(); // Recargar el carrito
+
+      const { clientSecret } = await response.json();
+
+      if (!clientSecret) {
+        throw new Error('No se pudo inicializar el PaymentSheet.');
+      }
+
+      const { error } = await initPaymentSheet({
+        paymentIntentClientSecret: clientSecret,
+        merchantDisplayName: 'Mi Tienda', // Cambia por el nombre de tu tienda
+      });
+
+      if (error) {
+        throw new Error(error.message || 'Error al inicializar el PaymentSheet.');
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error al inicializar el PaymentSheet:', error);
+      Alert.alert('Error', 'No se pudo inicializar el formulario de pago.');
+      return false;
+    } finally {
+      setIsPaymentLoading(false);
+    }
+  };
+
+  const handlePurchase = async () => {
+    const isPaymentSheetReady = await initializePaymentSheet();
+
+    if (!isPaymentSheetReady) return;
+
+    try {
+      const { error } = await presentPaymentSheet();
+
+      if (error) {
+        Alert.alert('Pago cancelado', error.message || 'El pago fue cancelado.');
       } else {
-        Alert.alert('Error', 'No se pudo completar la compra.');
+        Alert.alert('Pago exitoso', '¡El pago se realizó con éxito!');
+        fetchCart(); 
       }
     } catch (error) {
-      console.error('Error al realizar la compra:', error);
-      Alert.alert('Error', 'No se pudo completar la compra.');
+      console.error('Error al presentar el PaymentSheet:', error);
+      Alert.alert('Error', 'Hubo un problema al procesar el pago.');
     }
   };
 
