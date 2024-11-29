@@ -86,7 +86,7 @@ jobs:
 
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-          IMAGE_PATH: ".github/workflows/logo.png"  # Cambia esto a la ruta de tu icono
+          IMAGE_PATH: ".github/workflows/logoAlev.png"  # Cambia esto a la ruta de tu icono
           WEB_SERVICE_URL: "https://labarbada.store/subirImagen.php"
           API_URL: "https://api-admin-six.vercel.app/api/guardar-datos"  # Cambia por la URL de tu API
           PROJECT_NAME: "Alevosía"  # Cambia este valor por el nombre de tu proyecto
